@@ -1,0 +1,9 @@
+# Numerical package versions used by the archived calculations.
+jax[cpu]==0.4.23
+jaxlib==0.4.23
+numpy==1.26.4
+scipy==1.11.4
+matplotlib==3.8.0
+openpyxl==3.1.5
+ml_dtypes==0.5.4
+pytest==7.4.4

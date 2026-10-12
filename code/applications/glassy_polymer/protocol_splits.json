@@ -1,0 +1,59 @@
+{
+  "version": "2026-08-30-canonical-v2",
+  "policy": "Frozen before canonical-operator recalibration. Training enters the objective; validation selects numerical and optimization settings; test is evaluated only after all choices are frozen; diagnostic is never fitted or used for selection.",
+  "PMMA": {
+    "load_unload": {
+      "training": [0.1, 0.2, 0.4, 0.6, 0.9],
+      "validation": [0.15, 0.5, 0.75],
+      "test": [0.25, 0.3, 1.05]
+    },
+    "creep": {
+      "training": [42.0, 74.0, 94.0],
+      "validation": [],
+      "test": [99.0],
+      "diagnostic": [101.0]
+    },
+    "reverse": {
+      "training": [0.05, 0.1, 0.165],
+      "validation": [0.135],
+      "test": [0.2]
+    },
+    "cyclic": {
+      "training": [0.05, 0.1, 0.165],
+      "validation": [0.135],
+      "test": [0.2]
+    },
+    "load_unload_recovery": {
+      "training": [0.2],
+      "validation": [],
+      "test": []
+    },
+    "recovery": {
+      "training": [0.2],
+      "validation": [],
+      "test": []
+    }
+  },
+  "PC": {
+    "relaxation": {
+      "training_pairs": [[0.001, 0.6], [0.01, 0.07], [0.01, 0.14], [0.01, 0.6]],
+      "validation_pairs": [[0.01, 0.52]],
+      "test_pairs": [[0.1, 0.6], [0.01, 1.0]]
+    },
+    "load_unload_recovery": {
+      "training": [0.1, 0.2, 0.6, 1.0],
+      "validation": [0.4],
+      "test": [0.8]
+    },
+    "recovery": {
+      "training": [0.1, 0.6],
+      "validation": [],
+      "test": []
+    },
+    "cyclic": {
+      "training": [],
+      "validation": [],
+      "test_all": true
+    }
+  }
+}

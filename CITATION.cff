@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "Please cite the accompanying manuscript when using this code."
+type: software
+title: "Code for Origins of non-uniqueness in the identification of internal-variable constitutive models for glassy polymers"
+authors:
+  - family-names: Ni
+    given-names: Zhiyang
+  - family-names: Lan
+    given-names: Tianxiang
+    email: lantianxiang111@163.com
+  - family-names: Jiang
+    given-names: Yaodong
+  - family-names: Wu
+    given-names: Peidong
+  - family-names: Wei
+    given-names: Yueguang
+repository-code: "https://github.com/lantx111-maker/JAX-Glassy-Polymer-Identification"
+license: GPL-3.0-only
+keywords:
+  - glassy polymers
+  - constitutive identification
+  - parameter non-uniqueness
+  - retained states

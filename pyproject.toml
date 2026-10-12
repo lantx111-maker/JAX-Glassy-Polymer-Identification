@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jax-glassy-polymer-identification"
+version = "0.1.0"
+description = "Material-point constitutive identification and retained-state analysis for glassy polymers"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "jax[cpu]==0.4.23", "jaxlib==0.4.23", "numpy==1.26.4",
+  "scipy==1.11.4", "matplotlib==3.8.0", "openpyxl==3.1.5",
+  "ml_dtypes==0.5.4"
+]
+
+[tool.setuptools.packages.find]
+where = ["code"]
+include = ["applications*"]
+namespaces = true
+
+[tool.setuptools.package-data]
+"applications.glassy_polymer" = ["protocol_splits.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

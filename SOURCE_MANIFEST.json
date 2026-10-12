@@ -1,0 +1,248 @@
+{
+  "code/applications/glassy_polymer/__init__.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/__init__.py",
+    "sha256": "30d0069200f5c1190105bcfef0be057a1cfd67c15865ba94917da793f61ea7de",
+    "frozen_producer_sha256": "30d0069200f5c1190105bcfef0be057a1cfd67c15865ba94917da793f61ea7de",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/calibration.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/calibration.py",
+    "sha256": "9ae9d8f2728b0aca073fe071d3b8c5f828e76455683b9f0301d919dd430ca5ca",
+    "frozen_producer_sha256": "9ae9d8f2728b0aca073fe071d3b8c5f828e76455683b9f0301d919dd430ca5ca",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/canonical.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/canonical.py",
+    "sha256": "e94a1da53b3955e0d77ead8a1b8c346331fc877158992dbae9a036f5d0ea371e",
+    "frozen_producer_sha256": "e94a1da53b3955e0d77ead8a1b8c346331fc877158992dbae9a036f5d0ea371e",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/constitutive.py": {
+    "origin": "manuscript/review/readme8_audit/reviewed_source/constitutive.py",
+    "sha256": "c667e1eea925beeb7f9e143f4d20700563b9c53683572c44d363c0df6a6590f7",
+    "frozen_producer_sha256": "6f6df8c6fbe3977aa916c0352212050969fb3210bf765c3c09378b7ca1dbdd65",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/data.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/data.py",
+    "sha256": "e2182fadb7da669555ecb7d68682b77efff29470efbbb6776e16cae2e6e6b576",
+    "frozen_producer_sha256": "e2182fadb7da669555ecb7d68682b77efff29470efbbb6776e16cae2e6e6b576",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/data_cleaning.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/data_cleaning.py",
+    "sha256": "71c80f09f3f03745b13d3ccb3d8f82362b65977bd5db031b98fac547523b96dd",
+    "frozen_producer_sha256": "71c80f09f3f03745b13d3ccb3d8f82362b65977bd5db031b98fac547523b96dd",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/experiments.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/experiments.py",
+    "sha256": "b81f48a5bf6501a889784d0b42d3ffbf4c6cc6c5bbe197ee9ffd7b3c0b102bf6",
+    "frozen_producer_sha256": "b81f48a5bf6501a889784d0b42d3ffbf4c6cc6c5bbe197ee9ffd7b3c0b102bf6",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/identifiability.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/identifiability.py",
+    "sha256": "256b016bd789ab4f8af0f5477bee0e9a348ab41701d8641a8dcd526f76901141",
+    "frozen_producer_sha256": "256b016bd789ab4f8af0f5477bee0e9a348ab41701d8641a8dcd526f76901141",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/inference.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/inference.py",
+    "sha256": "37174687be17c26d3edb0130da23699079e3c5c0980ac865da7badc3f1d0fe5f",
+    "frozen_producer_sha256": "37174687be17c26d3edb0130da23699079e3c5c0980ac865da7badc3f1d0fe5f",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/integration_mesh.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/integration_mesh.py",
+    "sha256": "326b8f74dc3cb29c6bfbe0831d3ba97f5e04550afbf3c4fe84171545752ff173",
+    "frozen_producer_sha256": "326b8f74dc3cb29c6bfbe0831d3ba97f5e04550afbf3c4fe84171545752ff173",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/inverse_design.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/inverse_design.py",
+    "sha256": "d1f6fadcb51c83b0eb29cd918c70936d7115064227066e60b5b635341e104713",
+    "frozen_producer_sha256": "d1f6fadcb51c83b0eb29cd918c70936d7115064227066e60b5b635341e104713",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/objectives.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/objectives.py",
+    "sha256": "530d64fec195c64f35063d4d62e6145ac153c661e7067545bbf7dfe7cc3ea441",
+    "frozen_producer_sha256": "530d64fec195c64f35063d4d62e6145ac153c661e7067545bbf7dfe7cc3ea441",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/protocols.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/protocols.py",
+    "sha256": "9373adffc26ef2cecefe1967fa6889a90355f54efafe0bc323b12921db37bdc0",
+    "frozen_producer_sha256": "9373adffc26ef2cecefe1967fa6889a90355f54efafe0bc323b12921db37bdc0",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/protocol_splits.json": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/protocol_splits.json",
+    "sha256": "513074cbae28615989d0f36be38a46599f6089f0b12817ccdd22739de6eff5d8",
+    "frozen_producer_sha256": "513074cbae28615989d0f36be38a46599f6089f0b12817ccdd22739de6eff5d8",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/audit_digitised_data.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/audit_digitised_data.py",
+    "sha256": "acf56e6514dd355db760531c533c4a578573a933bc900fd45b842537a52c23f0",
+    "frozen_producer_sha256": "acf56e6514dd355db760531c533c4a578573a933bc900fd45b842537a52c23f0",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/audit_readme_v9_derivative_guards.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/audit_readme_v9_derivative_guards.py",
+    "sha256": "4d7b20a152f27e605ebeb0d281405efac047d6e14528542d482aae5c029e2b62",
+    "frozen_producer_sha256": "4d7b20a152f27e605ebeb0d281405efac047d6e14528542d482aae5c029e2b62",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/audit_readme_v9_final_directions.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/audit_readme_v9_final_directions.py",
+    "sha256": "c8491d08c2bb5fe3ff7299790e2ccab2da7b0a0975f97955c5e3a36cb110ac46",
+    "frozen_producer_sha256": "c8491d08c2bb5fe3ff7299790e2ccab2da7b0a0975f97955c5e3a36cb110ac46",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/audit_readme_v9_probe_cross.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/audit_readme_v9_probe_cross.py",
+    "sha256": "8bc7d1eed847f61c0def76386af5432a10978277decb278460afdfddc43ebb9f",
+    "frozen_producer_sha256": "8bc7d1eed847f61c0def76386af5432a10978277decb278460afdfddc43ebb9f",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/audit_v8_full_geometry.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/audit_v8_full_geometry.py",
+    "sha256": "09b24c4f0de6f67238e1af861573a21fd26f137c855b44ef7a29281828e88a39",
+    "frozen_producer_sha256": "09b24c4f0de6f67238e1af861573a21fd26f137c855b44ef7a29281828e88a39",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/audit_v8_reload_refinement.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/audit_v8_reload_refinement.py",
+    "sha256": "f46f0edc63de2535644db589f508bf36b00077b1b55716f672e593899d76df28",
+    "frozen_producer_sha256": "f46f0edc63de2535644db589f508bf36b00077b1b55716f672e593899d76df28",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/audit_v9_creep_continuation.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/audit_v9_creep_continuation.py",
+    "sha256": "b6c9199c347819db5afa95905e2cd5f3445dadd180a08449d5763e8003150541",
+    "frozen_producer_sha256": "b6c9199c347819db5afa95905e2cd5f3445dadd180a08449d5763e8003150541",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/audit_v9_geometry_convergence.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/audit_v9_geometry_convergence.py",
+    "sha256": "02c67c562729f697cc93d8f4dcbef4c7fe312b633d0c7d0d8a270c2910eb59f9",
+    "frozen_producer_sha256": "02c67c562729f697cc93d8f4dcbef4c7fe312b633d0c7d0d8a270c2910eb59f9",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/build_data_manifest.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/build_data_manifest.py",
+    "sha256": "bc79f4d2bad18dd1383dcc9c524290d9b05ed72e0789e3cce47f6c46354aa9ae",
+    "frozen_producer_sha256": "bc79f4d2bad18dd1383dcc9c524290d9b05ed72e0789e3cce47f6c46354aa9ae",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/calibrate_full_history.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/calibrate_full_history.py",
+    "sha256": "285e147895b05ba8b8d39adcfdbe331b5d686989bdff066ed0a9399c8168f0d5",
+    "frozen_producer_sha256": "285e147895b05ba8b8d39adcfdbe331b5d686989bdff066ed0a9399c8168f0d5",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/plot_observable_design_landscape.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/plot_observable_design_landscape.py",
+    "sha256": "2cb01520d144f2eeaaec23d23dca6aafa3865a9342f00d80b02cd1ccd71fec86",
+    "frozen_producer_sha256": "2cb01520d144f2eeaaec23d23dca6aafa3865a9342f00d80b02cd1ccd71fec86",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_inverse_design.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_inverse_design.py",
+    "sha256": "8877e40e7cdec8fce652149db29289a18f14f5b91153d15231a89cdff08494a1",
+    "frozen_producer_sha256": "8877e40e7cdec8fce652149db29289a18f14f5b91153d15231a89cdff08494a1",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_joint_observability.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_joint_observability.py",
+    "sha256": "67721e1c9aa82df9811666f36976c5d397cf910218064130f0007121e9f658b2",
+    "frozen_producer_sha256": "67721e1c9aa82df9811666f36976c5d397cf910218064130f0007121e9f658b2",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_long_history_verification.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_long_history_verification.py",
+    "sha256": "5c4432d63c07e0389cd6962ad6535e7b0df679dbba775509c3972ff5cc6dc917",
+    "frozen_producer_sha256": "5c4432d63c07e0389cd6962ad6535e7b0df679dbba775509c3972ff5cc6dc917",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_path_baselines.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_path_baselines.py",
+    "sha256": "7f353cfcead7921b134baff525e5ad96fb820a610c02411e4a8144a31e2e0ba3",
+    "frozen_producer_sha256": "7f353cfcead7921b134baff525e5ad96fb820a610c02411e4a8144a31e2e0ba3",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_v4_all_path_audit.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_v4_all_path_audit.py",
+    "sha256": "d31c72100aa6a4b5ff75d66442e7374efe77e20c4130dbcec0510471a1da7ef3",
+    "frozen_producer_sha256": "d31c72100aa6a4b5ff75d66442e7374efe77e20c4130dbcec0510471a1da7ef3",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_v4_feasible_design.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_v4_feasible_design.py",
+    "sha256": "1ba90c9d8749e3d1b0ec04a5228ca2ae0e4d78263dcd55f03be8b6fc2101b981",
+    "frozen_producer_sha256": "1ba90c9d8749e3d1b0ec04a5228ca2ae0e4d78263dcd55f03be8b6fc2101b981",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_v4_mesh_audit.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_v4_mesh_audit.py",
+    "sha256": "d879ff1b628d26fe94d7004b7743317fb3349f049e66b9b1bac24224c21068bf",
+    "frozen_producer_sha256": "d879ff1b628d26fe94d7004b7743317fb3349f049e66b9b1bac24224c21068bf",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_v5_extrapolative_gate.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_v5_extrapolative_gate.py",
+    "sha256": "26159d16c36e5d687078a961676c5fa76e92d672cc68801102a642987a64a8de",
+    "frozen_producer_sha256": "26159d16c36e5d687078a961676c5fa76e92d672cc68801102a642987a64a8de",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_v5_fixed_objective_audit.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_v5_fixed_objective_audit.py",
+    "sha256": "ab371afe2f9230fb823c3257a760a30d40e3270573818d60bf76682329d35a85",
+    "frozen_producer_sha256": "ab371afe2f9230fb823c3257a760a30d40e3270573818d60bf76682329d35a85",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_v5_follow_on_discriminator.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_v5_follow_on_discriminator.py",
+    "sha256": "591c7dbe5449ebc47138bbaf67e8db59eda925b41d482dba7b0364baf6872fbe",
+    "frozen_producer_sha256": "591c7dbe5449ebc47138bbaf67e8db59eda925b41d482dba7b0364baf6872fbe",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_v5_matrix_power_audit.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_v5_matrix_power_audit.py",
+    "sha256": "4fc644a6d496bf59fb9ecccdd5b29db735bdfc389bc46ad7dcdb1bd7a432d294",
+    "frozen_producer_sha256": "4fc644a6d496bf59fb9ecccdd5b29db735bdfc389bc46ad7dcdb1bd7a432d294",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_v5_sensitivity_gate.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_v5_sensitivity_gate.py",
+    "sha256": "9dd2e4cf97ccba05084753965351cadf710fcf03e25a4b93c49ac18e00769504",
+    "frozen_producer_sha256": "9dd2e4cf97ccba05084753965351cadf710fcf03e25a4b93c49ac18e00769504",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_v9_gauge_fixed_joint_inversion.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_v9_gauge_fixed_joint_inversion.py",
+    "sha256": "19a4af7e0afd89a48a55329874322e7ff8d94089e5814babf5237bbc6f8a6b54",
+    "frozen_producer_sha256": "19a4af7e0afd89a48a55329874322e7ff8d94089e5814babf5237bbc6f8a6b54",
+    "executable_change": false
+  },
+  "code/applications/glassy_polymer/scripts/run_v9_gauge_fixed_joint_inversion_resume.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/scripts/run_v9_gauge_fixed_joint_inversion_resume.py",
+    "sha256": "ce6ba94a4ba2e47473dedc14793f1b49247b441d4866c35f4ffb6472498ec499",
+    "frozen_producer_sha256": "ce6ba94a4ba2e47473dedc14793f1b49247b441d4866c35f4ffb6472498ec499",
+    "executable_change": false
+  },
+  "tests/test_constitutive.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/tests/test_constitutive.py",
+    "sha256": "51a138c778f43ca67fb1d63b56c12f32afc88f1b8a02d9950db3435c94294a93",
+    "frozen_producer_sha256": "51a138c778f43ca67fb1d63b56c12f32afc88f1b8a02d9950db3435c94294a93",
+    "executable_change": false
+  },
+  "tests/test_v9_invariance.py": {
+    "origin": "reproducibility_package/code/applications/glassy_polymer/tests/test_v9_invariance.py",
+    "sha256": "dd1ddde7d52b5cd75deb0eb9f7643049486d09798488f7b16c12d5ff2dd0da6d",
+    "frozen_producer_sha256": "dd1ddde7d52b5cd75deb0eb9f7643049486d09798488f7b16c12d5ff2dd0da6d",
+    "executable_change": false
+  }
+}

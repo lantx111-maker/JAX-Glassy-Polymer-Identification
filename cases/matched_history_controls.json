@@ -1,0 +1,54 @@
+{
+  "source": "Current manuscript, loading schedules table, part B",
+  "displayed_rounding": true,
+  "endpoints_are_already_amplitude_scaled": true,
+  "transition_to_zero_stress_s": 37.5,
+  "zero_stress_recovery_s": 562.5,
+  "histories": [
+    {
+      "name": "work_oriented",
+      "strain_endpoints": [
+        0.073586,
+        0.046977,
+        0.049487,
+        0.038343
+      ],
+      "segment_durations_s": [
+        80.486,
+        260.346,
+        100.076,
+        239.983
+      ]
+    },
+    {
+      "name": "balanced",
+      "strain_endpoints": [
+        0.073642,
+        0.04607,
+        0.049766,
+        0.038073
+      ],
+      "segment_durations_s": [
+        78.761,
+        253.206,
+        96.552,
+        232.313
+      ]
+    },
+    {
+      "name": "time_oriented",
+      "strain_endpoints": [
+        0.042944,
+        0.075695,
+        0.029236,
+        0.043888
+      ],
+      "segment_durations_s": [
+        20.94,
+        20.94,
+        20.94,
+        20.94
+      ]
+    }
+  ]
+}
