@@ -1,15 +1,4 @@
-"""Replay converged physical IFT sites and archive branch-resolved diagnostics.
-
-No constitutive or control equation is replaced. The history recorder retains
-the same nested substep operations while exposing their normally discarded
-interior states. Counts identify distinct converged material-step sites, not
-AD execution multiplicities or temporary outer-Newton iterates.
-
-``--mode all`` replays the mother, domain and diagonal-design suites;
-``--mode cross-probes`` separately adds the two crossed probe combinations.
-Use an explicit fresh ``--output`` for a new computational source version.
-Existing archives are immutable and retain their own COMPUTATION_SOURCE.py.
-"""
+"""Check constitutive and control-root safeguards along complete histories."""
 from __future__ import annotations
 
 import os
@@ -44,10 +33,10 @@ from applications.glassy_polymer.canonical import (
     CANONICAL_OPERATOR_VERSION, CANONICAL_REGULARIZATION as REG,
     CANONICAL_RESOLUTION, CanonicalResolution,
 )
-from applications.glassy_polymer.scripts.run_v4_feasible_design import encode
+from applications.glassy_polymer.scripts.match_residual_histories import encode
 
 APP = Path(__file__).resolve().parents[1]
-OUTPUT = APP / "results/readme_v9_derivative_guards"
+OUTPUT = APP / "results/derivative_guards"
 TOL_STRESS_MPA = 1e-10
 TOL_RATE_PER_S = 1e-10
 
@@ -291,11 +280,11 @@ def summarize(label, captured, params, folder, batch_size):
 def run_cross_probes(folder, batch_size):
     """Replay missing probe substeps from unchanged, archived complete states."""
     sources = {
-        "state_archive": APP / "results/v8_reload_refinement/reload_refinement_states_and_envelopes.npz",
-        "state_runs": APP / "results/v8_reload_refinement/reload_refinement_runs.csv",
-        "controls": APP / "results/v4_feasible_design/feasible_history_refinement.csv",
-        "cross_trajectories": APP / "results/readme_v9_probe_cross/probe_cross_trajectories.csv",
-        "cross_summary": APP / "results/readme_v9_probe_cross/probe_cross_summary.json",
+        "state_archive": APP / "results/reload_refinement/reload_refinement_states_and_envelopes.npz",
+        "state_runs": APP / "results/reload_refinement/reload_refinement_runs.csv",
+        "controls": APP / "results/matched_residual_histories/feasible_history_refinement.csv",
+        "cross_trajectories": APP / "results/crossed_probes/probe_cross_trajectories.csv",
+        "cross_summary": APP / "results/crossed_probes/probe_cross_summary.json",
     }
     source_hashes = {key: sha(path) for key, path in sources.items()}
     with np.load(sources["state_archive"], allow_pickle=False) as stored:
@@ -380,7 +369,7 @@ def main():
     if args.mode == "cross-probes" and args.output == OUTPUT:
         args.output = OUTPUT / "crossed_probes"
     args.output.mkdir(parents=True, exist_ok=True)
-    base = json.loads((APP / "results/v9_creep_continuation/final_mechanism_geometry.json").read_text())
+    base = json.loads((APP / "results/creep_refinement/final_mechanism_geometry.json").read_text())
     resolution = CanonicalResolution(**base["resolution"])
     core = {path.name: sha(path) for path in APP.glob("*.py")}
     signature = {"core_source_sha256": core, "protocol_splits_sha256": sha(APP / "protocol_splits.json"),
@@ -406,7 +395,7 @@ def main():
     jobs = []
     if args.mode in {"mother", "domain", "all"}:
         if args.mode in {"mother", "all"}:
-            selected = set(row["curve_id"] for row in json.loads((APP / "results/v8_full_geometry_audit/row_manifest.json").read_text()))
+            selected = set(row["curve_id"] for row in json.loads((APP / "results/initial_geometry_meshes/row_manifest.json").read_text()))
             jobs.extend(("mother_final", experiment, resolution) for experiment in ex.build_experiments("PMMA") if experiment.curve_id in selected)
         if args.mode in {"domain", "all"}:
             jobs.extend(("domain44", experiment, CANONICAL_RESOLUTION) for experiment in ex.build_experiments())
@@ -441,10 +430,10 @@ def main():
         print(json.dumps({key: value for key, value in summary.items() if key != "branches"}), flush=True)
         jax.clear_caches(); gc.collect()
     if args.mode in {"design", "all"}:
-        source = APP / "results/v4_feasible_design/feasible_history_refinement.csv"
+        source = APP / "results/matched_residual_histories/feasible_history_refinement.csv"
         with source.open() as handle:
             rows = [row for row in csv.DictReader(handle) if abs(float(row["target"]) - .020) < 1e-12 and int(row["mesh_level"]) == 32]
-        with np.load(APP / "results/v8_reload_refinement/reload_refinement_states_and_envelopes.npz") as archive:
+        with np.load(APP / "results/reload_refinement/reload_refinement_states_and_envelopes.npz") as archive:
             reference = {name: archive[name].copy() for name in archive.files}
         params = c.pmma_parameters()
         for level, substeps in ((32, 4), (48, 8)):

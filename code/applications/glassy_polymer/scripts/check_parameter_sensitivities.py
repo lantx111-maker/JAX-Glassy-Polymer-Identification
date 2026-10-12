@@ -18,7 +18,7 @@ from applications.glassy_polymer.experiments import build_experiments, predict
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "results" / "v5_sensitivity_gate"
+OUTPUT = ROOT / "results" / "parameter_sensitivities"
 NAMES = ("m_ve", "zeta1", "zeta2", "h3", "b1_sat", "b2_sat")
 PATHS = ("C06", "C22", "C27")
 

@@ -23,12 +23,12 @@ import numpy as np
 from applications.glassy_polymer.constitutive import pmma_parameters
 from applications.glassy_polymer.inverse_design import observable_retained_response
 from applications.glassy_polymer.protocols import run_strain_history
-from applications.glassy_polymer.scripts.run_v4_feasible_design import encode
+from applications.glassy_polymer.scripts.match_residual_histories import encode
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "results" / "v4_feasible_design" / "feasible_history_refinement.csv"
-OUTPUT = ROOT / "results" / "v8_reload_refinement"
+SOURCE = ROOT / "results" / "matched_residual_histories" / "feasible_history_refinement.csv"
+OUTPUT = ROOT / "results" / "reload_refinement"
 TARGET = 0.020
 TARGET_TOLERANCE = 2.0e-4
 LEVELS = ((32, 4), (48, 8))

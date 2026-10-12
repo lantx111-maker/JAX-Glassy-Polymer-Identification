@@ -1,4 +1,4 @@
-"""Construct target-feasible V4 histories and compare their retained states.
+"""Construct target-feasible production histories and compare their retained states.
 
 This is deliberately a bracketed one-dimensional amplitude solve on three
 predeclared history shapes.  It does not claim a work- or time-optimal point.
@@ -27,7 +27,7 @@ from applications.glassy_polymer.scripts.plot_observable_design_landscape import
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "results" / "observable_inverse_design" / "observable_design_controls.csv"
-OUTPUT = ROOT / "results" / "v4_feasible_design"
+OUTPUT = ROOT / "results" / "matched_residual_histories"
 TARGETS = (0.02, 0.07)
 SOLVE_LEVEL = 32
 LEVELS = (24, 32, 48)
@@ -233,8 +233,8 @@ def main() -> None:
     for index, axis in enumerate(axes.flat):
         axis.text(0.02, 0.98, f"({chr(97 + index)})", transform=axis.transAxes,
                   va="top", fontweight="bold")
-    fig.savefig(OUTPUT / "v4_feasible_history_design.pdf", bbox_inches="tight")
-    fig.savefig(OUTPUT / "v4_feasible_history_design.png", dpi=360, bbox_inches="tight")
+    fig.savefig(OUTPUT / "matched_history_design.pdf", bbox_inches="tight")
+    fig.savefig(OUTPUT / "matched_history_design.png", dpi=360, bbox_inches="tight")
     plt.close(fig)
 
 

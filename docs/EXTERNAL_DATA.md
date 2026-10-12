@@ -31,3 +31,10 @@ to the separate author numerical archive.
 Generated experimental comparisons can contain the supplied observations.
 Keep those outputs outside the Git history unless their sharing terms have
 been reviewed. The supplied `.gitignore` excludes default result directories.
+
+The original numerical archive keeps its original file names and source
+signatures. Existing archived checkpoints must be evaluated with their matching
+archived code; descriptive source names and identifiers in this repository do
+not replace those signatures. Fresh calculations generate mutually consistent
+source signatures using this repository's names. Source-hash verification is
+retained and is not bypassed to accept an incompatible checkpoint.

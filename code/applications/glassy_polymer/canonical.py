@@ -21,7 +21,7 @@ CANONICAL_REGULARIZATION = ConstitutiveRegularization(
     activation_rate=CANONICAL_ACTIVATION_RATE,
 )
 CANONICAL_OPERATOR_VERSION = (
-    "canonical-v4r2-continuous-branches-clock-bracketed-root-exact-phi-spd-refined-mesh"
+    "implicit-continuous-branches-clock-bracketed-root-exact-phi-spd-refined-mesh"
 )
 
 

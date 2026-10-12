@@ -24,9 +24,9 @@ from applications.glassy_polymer.constitutive import MaterialState, pmma_paramet
 from applications.glassy_polymer.protocols import run_strain_history
 
 ROOT = Path(__file__).resolve().parents[1]
-OLD = ROOT / "results/v8_reload_refinement"
-OUTPUT = ROOT / "results/readme_v9_probe_cross"
-SOURCE = ROOT / "results/v4_feasible_design/feasible_history_refinement.csv"
+OLD = ROOT / "results/reload_refinement"
+OUTPUT = ROOT / "results/crossed_probes"
+SOURCE = ROOT / "results/matched_residual_histories/feasible_history_refinement.csv"
 COMBINATIONS = ((32, 4), (32, 8), (48, 4), (48, 8))
 TARGET, TARGET_TOLERANCE = 0.020, 2.0e-4
 
@@ -62,7 +62,7 @@ def main():
                OLD / "reload_refinement_states_and_envelopes.npz",
                ROOT / "constitutive.py", ROOT / "protocols.py",
                ROOT / "canonical.py", ROOT / "inverse_design.py",
-               ROOT / "scripts/audit_v8_reload_refinement.py", Path(__file__)]
+               ROOT / "scripts/compare_reload_meshes.py", Path(__file__)]
     source_hashes = {str(path.relative_to(ROOT)): sha256(path) for path in sources}
     archived_summary = json.loads((OLD / "reload_refinement_summary.json").read_text())
     if archived_summary["source_sha256"] != sha256(SOURCE):
@@ -236,7 +236,7 @@ def main():
         if sha256(path) != source_hashes[str(path.relative_to(ROOT))]:
             raise RuntimeError(f"source changed during this audit: {path}")
     summary = {
-        "audit": "readme_v9_state_probe_2x2_fixed_controls", "status": "completed",
+        "audit": "state_probe_2x2_fixed_controls", "status": "completed",
         "source_sha256": source_hashes, "profiles_matrix_order": profiles,
         "state_probe_combinations": [list(pair) for pair in COMBINATIONS],
         "new_combinations": [[32, 8], [48, 4]], "inherited_combinations": [[32, 4], [48, 8]],
@@ -260,7 +260,7 @@ def main():
         "all_target_errors_within_existing_tolerance": all(row["target_tolerance_satisfied"] for row in state_rows),
         "all_combinations_most_separated_pair_equal": len({tuple(row["most_separated_pair"]) for row in combination_rows}) == 1,
         "scope": "Finite 2x2 resolution audit at fixed archived actual level-32 controls and common 81 times; no asymptotic bound, experimental detectability, recalibration, or full probe-library rank stability is inferred.",
-        "provenance_limitation": "The inherited V8 state archive recorded the control-source SHA, not a complete contemporaneous core-source signature. This audit hashes all consumed archived arrays and the current cross-probe source; it does not retroactively invent absent V8 provenance.",
+        "provenance_limitation": "The inherited INITIAL state archive recorded the control-source SHA, not a complete contemporaneous core-source signature. This audit hashes all consumed archived arrays and the current cross-probe source; it does not retroactively invent absent INITIAL provenance.",
         "state_admissibility_scope": "New probe finite/SPD checks cover the 81 saved observation states; no claim about unsaved internal substeps or derivative-guard activation follows.",
     }
     write_csv("probe_cross_trajectories.csv", trajectory_rows)
@@ -281,7 +281,7 @@ def main():
                         **array_output, **new_state_arrays)
     (OUTPUT / "probe_cross_summary.json").write_text(json.dumps(summary, indent=2, allow_nan=False) + "\n")
     report = ["# Fixed-control state/probe 2x2 audit", "",
-              "Only state32/probe8 and state48/probe4 are newly integrated. The full terminal states and both diagonal trajectories are reused from the frozen V8 archive. No control amplitude or prehistory is re-solved.", "",
+              "Only state32/probe8 and state48/probe4 are newly integrated. The full terminal states and both diagonal trajectories are reused from the frozen INITIAL archive. No control amplitude or prehistory is re-solved.", "",
               "All 12 trajectories use the same 81 observation times, 100 s duration and +0.10 compressive logarithmic strain. The labels describe numerical resolution, not different physical protocols.", "",
               "## Pairwise peak separations (MPa)", "",
               "Each symmetric matrix is the maximum absolute stress difference over the common 81 times. All 12 pair maxima occur at point 80, t = 100 s, additional strain = 0.10.", ""]
@@ -295,7 +295,7 @@ def main():
                    "The most-separated pair remains minimum_work / minimum_time in all four combinations. State refinement and probe refinement both reduce this peak; the small coupled peak change is not cancellation of opposite-signed peak changes. This statement concerns the sampled peak, not an asymptotic error bound.", "",
                    "The complete envelope changes more than its maximum: the coupled maximum pointwise envelope change is 0.007786119021 MPa (2.89945% of the finest peak), whereas the peak itself changes by 0.000600718754 MPa (0.223700% of the finest peak). State-only envelope changes are 0.003720481248 / 0.003744664159 MPa; probe-only changes are 0.004151753481 / 0.004155258094 MPa. The maximum interaction magnitude is 0.000083166279 MPa. See the JSON for signs, all comparison locations, profile stress changes, residual errors and the original controls.", "",
                    "All residual targets remain within the pre-existing absolute tolerance 0.0002. State32 residual errors are about 1e-9, while state48 errors are 3.34e-5 to 3.84e-5; calling the refined outputs exactly equal would conceal this difference.", "",
-                   "Finite and positive-definiteness checks for new probes cover the saved observation states only. They are not an all-internal-substep derivative-guard audit. The archive contains no complete contemporaneous V8 core-source signature; current source hashes cannot retroactively supply it. Experimental detectability and the ranking of the entire probe library are outside this audit.", "",
+                   "Finite and positive-definiteness checks for new probes cover the saved observation states only. They are not an all-internal-substep derivative-guard audit. The archive contains no complete contemporaneous INITIAL core-source signature; current source hashes cannot retroactively supply it. Experimental detectability and the ranking of the entire probe library are outside this audit.", "",
                    "## Machine-readable outputs", "",
                    "- `probe_cross_summary.json`: full provenance, fixed controls, residuals, four-combination metrics and six envelope comparisons.",
                    "- `probe_cross_combinations.csv`, `probe_cross_pairs.csv`, `probe_cross_pairwise_matrices.csv`: four-combination table and all three pairs, with peak locations.",

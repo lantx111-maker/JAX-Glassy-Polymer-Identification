@@ -1,10 +1,8 @@
-"""Resume an archived V9 budget interruption without changing the analysis.
+"""Resume a checkpointed complete-history calibration.
 
-The original numerical driver remains byte-for-byte unchanged. This wrapper
-reuses its Problem and reporting pipeline, replacing only the optimization
-schedule with its predeclared uncompleted suffix. Missing second moments are
-reset explicitly; this is not a bitwise continuation of uninterrupted RMSProp.
-"""
+The calculation reuses the declared problem and remaining optimization
+schedule. Missing second moments are reset explicitly; this is not a
+bitwise continuation of uninterrupted RMSProp."""
 from __future__ import annotations
 
 import argparse
@@ -19,7 +17,7 @@ import time
 import jax.numpy as jnp
 import numpy as np
 
-import run_v9_gauge_fixed_joint_inversion as engine
+import calibrate_gauge_fixed as engine
 
 
 def read_json(path):
@@ -48,7 +46,7 @@ def _source_file_app_suffix(value):
 
 
 def assert_resume_provenance_matches(current, archived):
-    """Assert the original V9 scientific invariants after directory relocation.
+    """Assert the original REFINED scientific invariants after directory relocation.
 
     Runtime descriptors (creation time, platform, etc.) remain descriptive, as
     in the initial driver. Every record field, including both content hashes,
@@ -108,7 +106,7 @@ def main():
            for item in old_stages):
         raise ValueError("Only a budget interruption, not a failed descent, can be resumed here")
     original_driver = Path(engine.__file__).resolve()
-    expected_driver_hash = old_provenance["core_source_sha256"]["scripts/run_v9_gauge_fixed_joint_inversion.py"]
+    expected_driver_hash = old_provenance["core_source_sha256"]["scripts/calibrate_gauge_fixed.py"]
     if sha(original_driver) != expected_driver_hash:
         raise RuntimeError("The original computational driver changed; refusing continuation")
     metadata = {

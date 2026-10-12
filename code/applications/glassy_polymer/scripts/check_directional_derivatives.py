@@ -1,10 +1,4 @@
-"""Fixed-final-mesh directional finite differences and finite scale orbits.
-
-No constitutive source or frozen matrix is changed. Every forward evaluation is
-cached atomically. The six directions and all amplitudes are selected before
-running any perturbed history. ``--benchmark`` runs only C06/base and the first
-central pair; rerunning without that flag resumes those exact computations.
-"""
+"""Verify complete-history directional derivatives on fixed observation rows."""
 from __future__ import annotations
 
 import argparse
@@ -27,7 +21,7 @@ def verify_frozen_outputs():
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     app = Path(__file__).resolve().parents[1]
-    output = args.output or app / "results/readme_v9_final_directions"
+    output = args.output or app / "results/directional_derivatives"
     manifest_path = output / "fixed_object_manifest.json"
     manifest = json.loads(manifest_path.read_text())
     signature = hashlib.sha256(json.dumps(manifest, sort_keys=True).encode()).hexdigest()
@@ -48,7 +42,7 @@ def verify_frozen_outputs():
         print(json.dumps({"status": "INCOMPLETE", "completed_evaluations_by_curve": completed}, indent=2))
         return 2
     prediction = np.concatenate(parts, axis=1)
-    matrix_path = app / "results/v9_creep_continuation/creep_C1_L4_full.npz"
+    matrix_path = app / "results/creep_refinement/creep_C1_L4_full.npz"
     if hashlib.sha256(matrix_path.read_bytes()).hexdigest() != manifest["final_matrix_sha256"]:
         raise RuntimeError("Frozen final matrix SHA mismatch")
     with np.load(matrix_path) as archive:
@@ -103,7 +97,7 @@ from applications.glassy_polymer.constitutive import pmma_parameters
 from applications.glassy_polymer.data import resolve_data_root
 from applications.glassy_polymer.experiments import predict
 from applications.glassy_polymer.objectives import path_integration_weights
-from applications.glassy_polymer.scripts.audit_v9_geometry_convergence import (
+from applications.glassy_polymer.scripts.refine_geometry_mesh import (
     CORE_SOURCES, digest, peak_rss_mb, write_json,
 )
 from applications.glassy_polymer.scripts.run_joint_observability import (
@@ -111,11 +105,11 @@ from applications.glassy_polymer.scripts.run_joint_observability import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "results/readme_v9_final_directions"
+OUTPUT = ROOT / "results/directional_derivatives"
 FROZEN_OUTPUT = OUTPUT
-FINAL = ROOT / "results/v9_creep_continuation/creep_C1_L4_full.npz"
-SUMMARY = ROOT / "results/v9_creep_continuation/creep_continuation_summary.json"
-V9_SUMMARY = ROOT / "results/v9_geometry_convergence/geometry_convergence_summary.json"
+FINAL = ROOT / "results/creep_refinement/creep_C1_L4_full.npz"
+SUMMARY = ROOT / "results/creep_refinement/creep_continuation_summary.json"
+REFINEMENT_SUMMARY = ROOT / "results/geometry_refinement/geometry_convergence_summary.json"
 STEPS = (1.e-3, 1.e-4, 1.e-5)
 ORBIT_FACTORS = (.5, .8, 1.25, 2.)
 RANDOM_SEED = 20260907
@@ -155,7 +149,7 @@ def _atomic_npz(path, **values):
 
 def preflight():
     continuation = json.loads(SUMMARY.read_text())
-    v9 = json.loads(V9_SUMMARY.read_text())
+    refinement = json.loads(REFINEMENT_SUMMARY.read_text())
     with np.load(FINAL) as archive:
         matrix = archive["jacobian"].copy()
         names = archive["parameter_names"].tolist()
@@ -169,7 +163,7 @@ def preflight():
         raise RuntimeError("Unexpected final matrix shape/column order")
     source_hashes = {name: digest(ROOT / name) for name in CORE_SOURCES}
     for name, value in source_hashes.items():
-        if continuation["source_hashes"][name] != value or v9["source_hashes"][name] != value:
+        if continuation["source_hashes"][name] != value or refinement["source_hashes"][name] != value:
             raise RuntimeError(f"Frozen numerical source changed: {name}")
     source_hashes.update({name: digest(ROOT / name) for name in
                          ("integration_mesh.py", "data.py", "data_cleaning.py")})
@@ -177,7 +171,7 @@ def preflight():
     rows = continuation["row_manifest"]
     experiments = selected_experiments()
     factors = record_balancing_factors(experiments)
-    legacy_path = FROZEN_OUTPUT / "legacy_fixed_object_manifest_v1.json"
+    legacy_path = FROZEN_OUTPUT / "initial_observation_manifest.json"
     reference_path = FROZEN_OUTPUT / "fixed_object_manifest.json"
     reference = json.loads(reference_path.read_text()) if reference_path.exists() else None
     legacy = json.loads(legacy_path.read_text()) if legacy_path.exists() else reference
@@ -202,13 +196,13 @@ def preflight():
         # historical resolution fields, even when those fields do not affect
         # a particular non-creep history.
         if experiment.family == "creep":
-            cache = ROOT / f"results/v9_creep_continuation/creep_C1_{curve}.npz"
+            cache = ROOT / f"results/creep_refinement/creep_C1_{curve}.npz"
             historical_sources = continuation["source_hashes"]
             historical_settings = settings
         else:
-            cache = ROOT / f"results/v9_geometry_convergence/strain_recovery_L4_{curve}.npz"
-            historical_sources = v9["source_hashes"]
-            historical_settings = next(item["resolution"] for item in v9["levels"]
+            cache = ROOT / f"results/geometry_refinement/strain_recovery_L4_{curve}.npz"
+            historical_sources = refinement["source_hashes"]
+            historical_settings = next(item["resolution"] for item in refinement["levels"]
                                        if item["label"] == "strain_recovery_L4")
         context = {"source_hashes": historical_sources, "resolution": historical_settings,
                    "row": row, "names": names, "x": experiment.x.tolist(),
@@ -280,7 +274,7 @@ def preflight():
     return base, names, experiments, weights_by_curve, resolution, matrix, directions, manifest
 
 
-def migrate_v1_context(path, current, experiments):
+def import_scalar_cache_context(path, current, experiments):
     """Rebind only absolute-path metadata after exact science/cache checks.
 
     Old manifest, complete original scalar cache, and old producer hashes are
@@ -302,7 +296,7 @@ def migrate_v1_context(path, current, experiments):
         raise RuntimeError("Migration attempted to change arrays, weights, mesh, columns, or directions")
     old_signature = hashlib.sha256(json.dumps(previous, sort_keys=True).encode()).hexdigest()
     new_signature = hashlib.sha256(json.dumps(current, sort_keys=True).encode()).hexdigest()
-    backup = OUTPUT / "legacy_fixed_object_manifest_v1.json"
+    backup = OUTPUT / "initial_observation_manifest.json"
     if not backup.exists():
         backup.write_bytes(path.read_bytes())
     migrated = []
@@ -313,9 +307,9 @@ def migrate_v1_context(path, current, experiments):
         with np.load(cache) as archive:
             payload = {key: archive[key].copy() for key in archive.files}
         if str(payload["manifest_signature"].item()) != old_signature:
-            raise RuntimeError("V1 cache binding mismatch during migration")
+            raise RuntimeError("Scalar cache binding mismatch during migration")
         original_sha = digest(cache)
-        original = OUTPUT / f"{row['curve_id']}_evaluations_context_v1.npz"
+        original = OUTPUT / f"{row['curve_id']}_evaluations_initial_context.npz"
         if not original.exists():
             original.write_bytes(cache.read_bytes())
         payload["manifest_signature"] = new_signature
@@ -397,7 +391,7 @@ def merge_partition_outputs(sources, manifest, values, prefer_incoming):
                     hashes = np.full(41, "", dtype="U64")
                     hashes[np.isfinite(payload["predictions"]).all(axis=1)] = str(np.asarray(payload["execution_source_sha256"]).item())
                     payload["evaluation_source_sha256"] = hashes
-            scalar_backup = OUTPUT / f"{curve}_scalar_benchmark_v1.npz"
+            scalar_backup = OUTPUT / f"{curve}_scalar_benchmark.npz"
             if scalar_backup.exists():
                 with np.load(scalar_backup) as scalar:
                     for i in np.flatnonzero(np.isfinite(scalar["predictions"]).all(axis=1)):
@@ -443,7 +437,7 @@ def merge_partition_outputs(sources, manifest, values, prefer_incoming):
 def nominal_replay_comparison(manifest, observations):
     """Compare independent A1 nominal replays without generating any history."""
     reference = Path(os.environ.get(
-        "REPRO_README_V9_GUARD_ROOT", ROOT / "results/readme_v9_derivative_guards")).resolve()
+        "GLASSY_POLYMER_GUARD_ROOT", ROOT / "results/derivative_guards")).resolve()
     definition_path = reference / "audit_definition.json"
     required = [definition_path, reference / "COMPUTATION_SOURCE.py"]
     for row in manifest["row_manifest"]:
@@ -584,7 +578,7 @@ def main():
     manifest_signature = hashlib.sha256(json.dumps(manifest, sort_keys=True).encode()).hexdigest()
     manifest_path = OUTPUT / "fixed_object_manifest.json"
     if manifest_path.exists():
-        migrate_v1_context(manifest_path, manifest, experiments)
+        import_scalar_cache_context(manifest_path, manifest, experiments)
     write_json(manifest_path, manifest)
     values = evaluations(base, names, directions)
     if args.merge_inputs:
@@ -611,7 +605,7 @@ def main():
                     producer_hashes[np.isfinite(predictions).all(axis=1)] = str(archive["execution_source_sha256"].item())
             # The first batched benchmark deliberately preserved its three
             # scalar overlaps. Retain the actual original producer binding.
-            scalar_backup = OUTPUT / f"{curve}_scalar_benchmark_v1.npz"
+            scalar_backup = OUTPUT / f"{curve}_scalar_benchmark.npz"
             if scalar_backup.exists():
                 with np.load(scalar_backup) as scalar:
                     for i in np.flatnonzero(np.isfinite(scalar["predictions"]).all(axis=1)):
@@ -715,7 +709,7 @@ def main():
                                                   for curve, item in curve_results.items()}}
     report["execution_source_snapshots"] = {digest(path): path.name
         for path in sorted(OUTPUT.glob("COMPUTATION_SOURCE_*.py"))}
-    report["cache_producer_convention"] = "Each evaluation_source_sha256 binds the actual numerical producer; execution_source_sha256 identifies the latest cache/report writer and need not equal producers of preserved cached values. Scalar V1 and batch overlap evidence are archived separately."
+    report["cache_producer_convention"] = "Each evaluation_source_sha256 binds the actual numerical producer; execution_source_sha256 identifies the latest cache/report writer and need not equal producers of preserved cached values. Scalar and batch overlap evidence are archived separately."
     if results:
         report.update(results)
     write_json(OUTPUT / (f"batch{args.batch_size}_benchmark_summary.json" if args.batch_benchmark else

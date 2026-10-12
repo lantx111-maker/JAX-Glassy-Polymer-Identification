@@ -13,12 +13,12 @@ import numpy as np
 from applications.glassy_polymer.constitutive import pmma_parameters
 from applications.glassy_polymer.inverse_design import observable_retained_response
 from applications.glassy_polymer.scripts.plot_observable_design_landscape import scaled_controls
-from applications.glassy_polymer.scripts.run_v4_feasible_design import encode
+from applications.glassy_polymer.scripts.match_residual_histories import encode
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "results" / "v4_feasible_design" / "feasible_history_refinement.csv"
-OUTPUT = ROOT / "results" / "v5_extrapolative_gate"
+SOURCE = ROOT / "results" / "matched_residual_histories" / "feasible_history_refinement.csv"
+OUTPUT = ROOT / "results" / "secondary_residual_target"
 TARGET = 0.070
 PRODUCTION_LEVEL = 96
 REFERENCE_LEVEL = 128

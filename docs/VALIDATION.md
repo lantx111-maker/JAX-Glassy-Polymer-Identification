@@ -20,7 +20,7 @@ archive records Python 3.11.16; this check is not a byte-for-byte rerun of that
 entire campaign.
 
 Source hashes, imported analysis helpers and the absence of coordinate/result
-payloads were checked before the private upload. The documentation correction
-does not alter executable constitutive statements. Installation and these
+payloads were checked before the private upload. The numerical implementation follows the constitutive
+statements and control conditions documented in the manuscript. Installation and these
 bounded checks do not replace the full derivative, mesh and calibration
 evidence reported in the manuscript.

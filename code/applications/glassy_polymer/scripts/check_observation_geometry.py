@@ -1,4 +1,4 @@
-"""Verify that the declared objective is invariant to output-point density."""
+"""Verify a fixed observation objective under integration refinement."""
 
 from __future__ import annotations
 
@@ -15,11 +15,11 @@ from applications.glassy_polymer.constitutive import pmma_parameters
 from applications.glassy_polymer.experiments import build_experiments, predict
 from applications.glassy_polymer.integration_mesh import cumulative_absolute_coordinate
 from applications.glassy_polymer.objectives import path_integration_weights
-from applications.glassy_polymer.scripts.run_v4_mesh_audit import resample_piecewise
+from applications.glassy_polymer.scripts.check_mesh_and_resampling import resample_piecewise
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "results" / "v5_fixed_objective_audit"
+OUTPUT = ROOT / "results" / "observation_geometry"
 NAMES = ("m_ve", "zeta1", "zeta2", "h3", "b1_sat", "b2_sat")
 
 

@@ -1,9 +1,7 @@
-"""Matched-row, full-parameter mesh comparison for the V8 observability audit.
+"""Compare full-parameter sensitivity matrices on matched observation rows.
 
-This compares two discrete Jacobians; their difference is a two-mesh resolution
-indicator, not an a priori error bound to the continuous-time constitutive law.
-The 22 columns and 779 weighted observations match the published mother matrix.
-"""
+Physical integration meshes vary; observation coordinates and weighting
+remain fixed so that the comparison measures integration sensitivity."""
 
 from __future__ import annotations
 
@@ -36,8 +34,8 @@ from applications.glassy_polymer.scripts.run_joint_observability import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "results" / "v8_full_geometry_audit"
-OLD_MATRIX = ROOT / "results/v4_parameter_screening/common_22_parameter_jacobian_ad.npy"
+OUTPUT = ROOT / "results" / "initial_geometry_meshes"
+OLD_MATRIX = ROOT / "results/parameter_screening/common_22_parameter_jacobian_ad.npy"
 
 
 def _digest(path):
@@ -53,7 +51,7 @@ def _angle(matrix_a, matrix_b, dimension):
 
 def _mechanism_audit(matrices, names, row_manifest, summary):
     """Reuse the matched matrices; the archived recovery factor stays frozen."""
-    source = ROOT / "results/v4_common_jacobian/common_geometry_spectra.csv"
+    source = ROOT / "results/conditional_geometry/common_geometry_spectra.csv"
     with source.open(newline="") as handle:
         archived = next(csv.DictReader(handle))
     factor = float(archived["recovery_discrepancy_factor"])
@@ -64,7 +62,7 @@ def _mechanism_audit(matrices, names, row_manifest, summary):
             recovery[row["row_start"]:row["row_end_exclusive"]] = True
     mechanism = {
         "frozen_recovery_factor": factor,
-        "recovery_factor_provenance": "results/v4_common_jacobian/common_geometry_spectra.csv",
+        "recovery_factor_provenance": "results/conditional_geometry/common_geometry_spectra.csv",
         "recovery_factor_interpretation": "The same archived 0.8418 factor is applied on both meshes; the recovery RMSE is not re-estimated on the fine mesh.",
         "meshes": {},
     }
@@ -151,7 +149,7 @@ def main():
         name: _digest(ROOT / name) for name in (
             "constitutive.py", "canonical.py", "experiments.py", "protocols.py",
             "objectives.py", "calibration.py", "scripts/run_joint_observability.py",
-            "scripts/audit_v8_full_geometry.py",
+            "scripts/compare_initial_geometry_meshes.py",
         )
     }
     matrices = {}

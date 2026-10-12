@@ -43,7 +43,7 @@ Neither command needs experimental observations.
 - `code/applications/glassy_polymer/`: constitutive update, controls, sensitivities,
   objectives, calibration and retained-state design.
 - `code/applications/glassy_polymer/scripts/`: scientific analysis drivers and
-  their imported helpers. Stable file identifiers retain the numerical lineage.
+  their imported helpers, named by the calculation they perform.
 - `tests/`: numerical regression checks.
 - `cases/`: the data-independent installation case and the manuscript's applied
   four-segment schedules.

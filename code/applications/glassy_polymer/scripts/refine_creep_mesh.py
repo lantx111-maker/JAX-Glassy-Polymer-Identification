@@ -1,9 +1,7 @@
-"""Continue the isolated creep-mesh audit after the first V9 probe failed.
+"""Refine the independent creep time mesh and compare parameter geometry.
 
-The L4 strain/recovery meshes remain fixed. Block assembly also compares L3/L4
-at the identical finer creep mesh and a pair with all mesh axes halved together.
-No original V8 or V9 result is modified.
-"""
+The observation rows and non-creep discretization are fixed. Independent
+creep refinement precedes the coupled time-mesh comparison."""
 
 from __future__ import annotations
 
@@ -24,7 +22,7 @@ from applications.glassy_polymer.canonical import CANONICAL_REGULARIZATION, SENS
 from applications.glassy_polymer.constitutive import pmma_parameters
 from applications.glassy_polymer.experiments import predict
 from applications.glassy_polymer.objectives import path_integration_weights
-from applications.glassy_polymer.scripts.audit_v9_geometry_convergence import (
+from applications.glassy_polymer.scripts.refine_geometry_mesh import (
     CORE_SOURCES, angle, compare, digest, geometry, peak_rss_mb, write_json,
 )
 from applications.glassy_polymer.scripts.run_joint_observability import (
@@ -33,8 +31,8 @@ from applications.glassy_polymer.scripts.run_joint_observability import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-V9 = ROOT / "results/v9_geometry_convergence"
-OUTPUT = ROOT / "results/v9_creep_continuation"
+REFINED = ROOT / "results/geometry_refinement"
+OUTPUT = ROOT / "results/creep_refinement"
 
 
 def read_matrix(path):
@@ -52,23 +50,23 @@ def main():
     jax.config.update("jax_enable_x64", True)
     OUTPUT.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
-    v9_summary = json.loads((V9 / "geometry_convergence_summary.json").read_text())
+    refinement_summary = json.loads((REFINED / "geometry_convergence_summary.json").read_text())
     sources = {name: digest(ROOT / name) for name in CORE_SOURCES}
-    sources["scripts/audit_v9_geometry_convergence.py"] = digest(ROOT / "scripts/audit_v9_geometry_convergence.py")
+    sources["scripts/refine_geometry_mesh.py"] = digest(ROOT / "scripts/refine_geometry_mesh.py")
     for name, value in sources.items():
-        if v9_summary["source_hashes"][name] != value:
-            raise RuntimeError(f"V9 numerical source changed: {name}")
-    sources["scripts/audit_v9_creep_continuation.py"] = digest(Path(__file__))
-    baseline_file = V9 / "strain_recovery_L4_creep_half_full_jacobian.npz"
-    l3_file = V9 / "strain_recovery_L3_full_jacobian.npz"
-    l4_file = V9 / "strain_recovery_L4_full_jacobian.npz"
+        if refinement_summary["source_hashes"][name] != value:
+            raise RuntimeError(f"REFINED numerical source changed: {name}")
+    sources["scripts/refine_creep_mesh.py"] = digest(Path(__file__))
+    baseline_file = REFINED / "strain_recovery_L4_creep_half_full_jacobian.npz"
+    l3_file = REFINED / "strain_recovery_L3_full_jacobian.npz"
+    l4_file = REFINED / "strain_recovery_L4_full_jacobian.npz"
     previous, names, baseline_settings = read_matrix(baseline_file)
     l3, l3_names, l3_settings = read_matrix(l3_file)
     l4, l4_names, l4_settings = read_matrix(l4_file)
     base = pmma_parameters()
     if names != list(base._fields) or names != l3_names or names != l4_names:
-        raise RuntimeError("V9 parameter column order changed")
-    rows = v9_summary["row_manifest"]
+        raise RuntimeError("REFINED parameter column order changed")
+    rows = refinement_summary["row_manifest"]
     experiments = selected_experiments()
     factors = record_balancing_factors(experiments)
     indices = [names.index(name) for name in CONDITIONAL_NAMES]
@@ -76,38 +74,38 @@ def main():
     creep_mask = np.zeros(779, dtype=bool)
     for experiment, row in zip(experiments, rows):
         if row["curve_id"] != experiment.curve_id or row["row_end_exclusive"] - row["row_start"] != len(experiment.x):
-            raise RuntimeError("V9 observation rows changed")
+            raise RuntimeError("REFINED observation rows changed")
         scale = (max(float(np.max(np.abs(experiment.y))), .02)
                  if experiment.family in {"creep", "recovery"} else 110.)
         if scale != row["observation_scale"] or factors[experiment.curve_id] != row["sqrt_family_record_observable_mass"]:
-            raise RuntimeError("V9 observation weights changed")
+            raise RuntimeError("REFINED observation weights changed")
         selected = slice(row["row_start"], row["row_end_exclusive"])
         if experiment.family == "recovery":
             recovery_mask[selected] = True
         if experiment.family == "creep":
             creep_mask[selected] = True
     if previous.shape != (779, 22) or not np.array_equal(previous[~creep_mask], l4[~creep_mask]):
-        raise RuntimeError("V9 creep-probe matrix did not preserve the L4 non-creep blocks")
+        raise RuntimeError("REFINED creep-probe matrix did not preserve the L4 non-creep blocks")
     with np.load(baseline_file) as archive:
         gauge = archive["analytic_gauge"].copy()
     summary = {
         "source_hashes": sources,
         "source_array_sha256": {
-            "results/v9_geometry_convergence/" + path.name: digest(path)
+            "results/geometry_refinement/" + path.name: digest(path)
             for path in (baseline_file, l3_file, l4_file)
         },
         "shape": [779, 22], "parameter_names": names, "row_manifest": rows,
-        "declared_gates": v9_summary["declared_gates"],
+        "declared_gates": refinement_summary["declared_gates"],
         "baseline_resolution": baseline_settings,
-        "baseline_label": "v9_L4_creep_half",
-        "inherited_creep_probe_failure": v9_summary["creep_probe"],
+        "baseline_label": "refined_L4_creep_half",
+        "inherited_creep_probe_failure": refinement_summary["creep_probe"],
         "status": "running", "levels": [], "history_timings": [],
         "interpretation": "Pure creep, same-creep strain/recovery, and coupled comparisons are separate; a pass in one is not substituted for another.",
     }
     summary_file = OUTPUT / "creep_continuation_summary.json"
     write_json(summary_file, summary)
-    previous_label = "v9_L4_creep_half"
-    previous_creep_sources = {row["curve_id"]: "results/v9_geometry_convergence/strain_recovery_L4_creep_half_full_jacobian.npz"
+    previous_label = "refined_L4_creep_half"
+    previous_creep_sources = {row["curve_id"]: "results/geometry_refinement/strain_recovery_L4_creep_half_full_jacobian.npz"
                               for row in rows if row["family"] == "creep"}
 
     def export(label, matrix, settings, source_by_curve):
@@ -115,7 +113,7 @@ def main():
         np.savez(path, jacobian=matrix, parameter_names=np.asarray(names),
                  analytic_gauge=gauge, resolution=json.dumps(settings, sort_keys=True),
                  source_block_level_by_curve=json.dumps(source_by_curve, sort_keys=True))
-        return {"path": "results/v9_creep_continuation/" + path.name,
+        return {"path": "results/creep_refinement/" + path.name,
                 "sha256": digest(path), "shape": [779, 22],
                 "parameter_names": names, "resolution": settings,
                 "source_block_level_by_curve": source_by_curve}
@@ -131,7 +129,7 @@ def main():
         for experiment, row in zip(experiments, rows):
             curve = experiment.curve_id
             if experiment.family != "creep":
-                current_sources[curve] = "results/v9_geometry_convergence/strain_recovery_L4_full_jacobian.npz"
+                current_sources[curve] = "results/geometry_refinement/strain_recovery_L4_full_jacobian.npz"
                 continue
             weights = factors[curve] * np.sqrt(path_integration_weights(experiment.x)) / row["observation_scale"]
             context = json.dumps({"source_hashes": sources, "resolution": settings,
@@ -164,7 +162,7 @@ def main():
                 gc.collect()
                 mode = "computed"
             current[row["row_start"]:row["row_end_exclusive"]] = block
-            current_sources[curve] = "results/v9_creep_continuation/" + cache.name
+            current_sources[curve] = "results/creep_refinement/" + cache.name
             seconds = time.monotonic() - history_started
             summary["history_timings"].append({"level": label, "curve_id": curve,
                                                 "elapsed_seconds": seconds, "mode": mode,
@@ -178,7 +176,7 @@ def main():
         same_settings["pmma_max_time_increment"] = settings["pmma_max_time_increment"]
         same_settings["pmma_severe_creep_max_time_increment"] = settings["pmma_severe_creep_max_time_increment"]
         same_sources = {row["curve_id"]: (current_sources[row["curve_id"]] if row["family"] == "creep"
-                                          else "results/v9_geometry_convergence/strain_recovery_L3_full_jacobian.npz")
+                                          else "results/geometry_refinement/strain_recovery_L3_full_jacobian.npz")
                         for row in rows}
         # Both mesh axes halve between this composite coarse and current fine.
         coupled_coarse = l3.copy()
@@ -187,7 +185,7 @@ def main():
         coupled_settings["pmma_max_time_increment"] *= 2.
         coupled_settings["pmma_severe_creep_max_time_increment"] *= 2.
         coupled_sources = {row["curve_id"]: (previous_creep_sources[row["curve_id"]] if row["family"] == "creep"
-                                             else "results/v9_geometry_convergence/strain_recovery_L3_full_jacobian.npz")
+                                             else "results/geometry_refinement/strain_recovery_L3_full_jacobian.npz")
                            for row in rows}
         exported = {
             "fine": export(label + "_L4_full", current, settings, current_sources),

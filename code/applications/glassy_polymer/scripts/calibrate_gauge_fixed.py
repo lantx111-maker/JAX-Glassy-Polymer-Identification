@@ -32,7 +32,7 @@ from applications.glassy_polymer.objectives import path_integration_weights, pse
 
 
 APP = Path(__file__).resolve().parents[1]
-DEFAULT_OUTPUT = APP / "results" / "v9_gauge_fixed_joint_inversion"
+DEFAULT_OUTPUT = APP / "results" / "gauge_fixed_calibration"
 BLOCKS = {
     "PMMA": (("m0", "s0", "h2", "s1", "s2"),
              ("m_ve", "zeta1", "zeta2", "h3", "b1_sat", "b2_sat")),
@@ -226,7 +226,7 @@ def provenance(problem):
     files = {str(path.relative_to(APP)): hashlib.sha256(path.read_bytes()).hexdigest()
              for path in sorted(APP.glob("*.py"))}
     files["protocol_splits.json"] = hashlib.sha256((APP / "protocol_splits.json").read_bytes()).hexdigest()
-    files["scripts/run_v9_gauge_fixed_joint_inversion.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    files["scripts/calibrate_gauge_fixed.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     records = []
     for experiment in problem.experiments:
         digest = hashlib.sha256()

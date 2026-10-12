@@ -1,11 +1,7 @@
-"""Continue matched full-Jacobian mesh refinement without changing the operator.
+"""Check sensitivity geometry under independent strain/recovery refinements.
 
-The first sequence halves only the PMMA strain and recovery-time increments.
-Its three creep blocks have exactly unchanged integration meshes and are reused.
-After the declared angular gates pass, an independent creep-time refinement
-recomputes only those three blocks. Every completed history is cached with its
-inputs and source hashes. Two-mesh differences remain discrete comparisons.
-"""
+An additional isolated creep refinement checks whether that control history
+requires a stricter time mesh before the coupled comparison."""
 
 from __future__ import annotations
 
@@ -35,8 +31,8 @@ from applications.glassy_polymer.scripts.run_joint_observability import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "results/v9_geometry_convergence"
-V8 = ROOT / "results/v8_full_geometry_audit"
+OUTPUT = ROOT / "results/geometry_refinement"
+INITIAL = ROOT / "results/initial_geometry_meshes"
 CORE_SOURCES = (
     "constitutive.py", "canonical.py", "experiments.py", "protocols.py",
     "objectives.py", "calibration.py", "scripts/run_joint_observability.py",
@@ -120,31 +116,31 @@ def main():
     OUTPUT.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
     source_hashes = {name: digest(ROOT / name) for name in CORE_SOURCES}
-    source_hashes["scripts/audit_v9_geometry_convergence.py"] = digest(Path(__file__))
-    v8_summary = json.loads((V8 / "full_geometry_summary.json").read_text())
+    source_hashes["scripts/refine_geometry_mesh.py"] = digest(Path(__file__))
+    initial_summary = json.loads((INITIAL / "full_geometry_summary.json").read_text())
     for name in CORE_SOURCES:
-        if source_hashes[name] != v8_summary["source_hashes"][name]:
-            raise RuntimeError(f"V8 numerical source changed: {name}")
-    v8_compute_hash = v8_summary["source_hashes"]["scripts/audit_v8_full_geometry.py"]
-    if v8_compute_hash not in (digest(ROOT / "scripts/audit_v8_full_geometry.py"),
-                               digest(V8 / "COMPUTATION_SOURCE_V1.txt")):
-        raise RuntimeError("V8 generating-script provenance cannot be verified")
+        if source_hashes[name] != initial_summary["source_hashes"][name]:
+            raise RuntimeError(f"INITIAL numerical source changed: {name}")
+    initial_compute_hash = initial_summary["source_hashes"]["scripts/compare_initial_geometry_meshes.py"]
+    if initial_compute_hash not in (digest(ROOT / "scripts/compare_initial_geometry_meshes.py"),
+                               digest(INITIAL / "COMPUTATION_SOURCE.txt")):
+        raise RuntimeError("INITIAL generating-script provenance cannot be verified")
     experiments = selected_experiments()
     factors = record_balancing_factors(experiments)
     names = list(pmma_parameters()._fields)
     base = pmma_parameters()
     indices = [names.index(name) for name in CONDITIONAL_NAMES]
-    rows = json.loads((V8 / "row_manifest.json").read_text())
+    rows = json.loads((INITIAL / "row_manifest.json").read_text())
     baseline_resolution = replace(SENSITIVITY_RESOLUTION,
                                   pmma_max_true_strain_increment=1.25e-4,
                                   recovery_max_time_increment=1.5625e-2)
-    if asdict(baseline_resolution) != v8_summary["meshes"]["ultrafine"]:
-        raise RuntimeError("V8 finer mesh disagrees with the declared V9 baseline")
-    with np.load(V8 / "matched_full_jacobians.npz") as archive:
+    if asdict(baseline_resolution) != initial_summary["meshes"]["ultrafine"]:
+        raise RuntimeError("INITIAL finer mesh disagrees with the declared REFINED baseline")
+    with np.load(INITIAL / "matched_full_jacobians.npz") as archive:
         previous = archive["ultrafine"].copy()
         gauge = archive["analytic_gauge"].copy()
         if names != archive["parameter_names"].tolist():
-            raise RuntimeError("V8 column order changed")
+            raise RuntimeError("INITIAL column order changed")
     recovery_mask = np.zeros(779, dtype=bool)
     cursor = 0
     weights_by_curve = {}
@@ -155,21 +151,21 @@ def main():
                 or row["row_end_exclusive"] != cursor + len(experiment.x)
                 or row["observation_scale"] != scale
                 or row["sqrt_family_record_observable_mass"] != factors[experiment.curve_id]):
-            raise RuntimeError(f"V8 fixed-row geometry changed at {experiment.curve_id}")
+            raise RuntimeError(f"INITIAL fixed-row geometry changed at {experiment.curve_id}")
         weights = factors[experiment.curve_id] * np.sqrt(path_integration_weights(experiment.x)) / scale
         weights_by_curve[experiment.curve_id] = weights
-        context_v8 = json.dumps({
-            "source_hashes": v8_summary["source_hashes"],
+        initial_context = json.dumps({
+            "source_hashes": initial_summary["source_hashes"],
             "resolution": asdict(baseline_resolution), "names": names,
             "row": row, "x": experiment.x.tolist(), "y": experiment.y.tolist(),
             "weights": weights.tolist(),
         }, sort_keys=True)
-        with np.load(V8 / f"ultrafine_{experiment.curve_id}.npz") as archive:
-            signature = hashlib.sha256(context_v8.encode()).hexdigest()
+        with np.load(INITIAL / f"ultrafine_{experiment.curve_id}.npz") as archive:
+            signature = hashlib.sha256(initial_context.encode()).hexdigest()
             if str(archive["signature"].item()) != signature:
-                raise RuntimeError(f"V8 cached source/input signature mismatch: {experiment.curve_id}")
+                raise RuntimeError(f"INITIAL cached source/input signature mismatch: {experiment.curve_id}")
             if not np.array_equal(archive["jacobian"], previous[cursor:cursor + len(weights)]):
-                raise RuntimeError("V8 concatenated matrix differs from its per-history cache")
+                raise RuntimeError("INITIAL concatenated matrix differs from its per-history cache")
         if experiment.family == "recovery":
             recovery_mask[cursor:cursor + len(weights)] = True
         cursor += len(weights)
@@ -177,8 +173,8 @@ def main():
         raise RuntimeError("Unexpected mother-matrix shape")
     summary = {
         "source_hashes": source_hashes,
-        "v8_baseline_array_sha256": digest(V8 / "matched_full_jacobians.npz"),
-        "v8_per_history_signatures_verified": True,
+        "initial_baseline_array_sha256": digest(INITIAL / "matched_full_jacobians.npz"),
+        "initial_history_signatures_verified": True,
         "shape": [779, 22], "parameter_names": names,
         "row_manifest": rows,
         "declared_gates": {"full22_weak3_angle_degrees": 1.,
@@ -186,7 +182,7 @@ def main():
                            "relative_frobenius_difference": .01,
                            "joint12_condition_number_relative_change": .05},
         "interpretation": "Two-mesh qualification of the fixed log-parameter response geometry; no continuum error bound or posterior uncertainty is inferred.",
-        "baseline_level": "v8_ultrafine",
+        "baseline_level": "initial_ultrafine",
         "baseline_resolution": asdict(baseline_resolution),
         "baseline_geometry": geometry(previous, indices, recovery_mask, gauge),
         "levels": [], "comparisons": [], "history_timings": [],
@@ -194,7 +190,7 @@ def main():
     }
     output_summary = OUTPUT / "geometry_convergence_summary.json"
     write_json(output_summary, summary)
-    previous_label = "v8_ultrafine"
+    previous_label = "initial_ultrafine"
     passed_level = None
     previous_new_level_seconds = None
     resolution = baseline_resolution

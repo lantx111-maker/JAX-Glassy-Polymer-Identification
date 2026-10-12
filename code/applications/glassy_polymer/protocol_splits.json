@@ -1,5 +1,5 @@
 {
-  "version": "2026-08-30-canonical-v2",
+  "version": "declared-protocol-splits",
   "policy": "Frozen before canonical-operator recalibration. Training enters the objective; validation selects numerical and optimization settings; test is evaluated only after all choices are frozen; diagnostic is never fitted or used for selection.",
   "PMMA": {
     "load_unload": {

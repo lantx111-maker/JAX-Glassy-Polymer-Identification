@@ -1,4 +1,4 @@
-"""V4 physical-mesh convergence and observation-resampling invariance."""
+"""Check physical integration and observation-resampling invariance."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ from applications.glassy_polymer.protocols import run_strain_history
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "results" / "v4_mesh_audit"
+OUTPUT = ROOT / "results" / "mesh_and_resampling"
 RETAINED_NAMES = ("m_ve", "zeta1", "zeta2", "h3", "b1_sat", "b2_sat")
 
 mpl.rcParams.update({
@@ -319,8 +319,8 @@ def main() -> None:
         axis.text(0.02, 0.98, f"({chr(97 + index)})", transform=axis.transAxes,
                   va="top", fontweight="bold")
         axis.grid(alpha=0.25, which="both")
-    fig.savefig(OUTPUT / "v4_mesh_and_resampling_audit.pdf", bbox_inches="tight")
-    fig.savefig(OUTPUT / "v4_mesh_and_resampling_audit.png", dpi=360, bbox_inches="tight")
+    fig.savefig(OUTPUT / "mesh_and_resampling.pdf", bbox_inches="tight")
+    fig.savefig(OUTPUT / "mesh_and_resampling.png", dpi=360, bbox_inches="tight")
     plt.close(fig)
 
 

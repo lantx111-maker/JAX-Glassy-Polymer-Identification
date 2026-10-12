@@ -14,7 +14,7 @@ from applications.glassy_polymer.constitutive import spd_power
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "results" / "v5_matrix_power_audit"
+OUTPUT = ROOT / "results" / "matrix_power_derivatives"
 POWERS = (0.2, 0.5, 0.9, 1.0)
 STEPS = (1.0e-2, 3.0e-3, 1.0e-3, 3.0e-4, 1.0e-4, 3.0e-5, 1.0e-5)
 

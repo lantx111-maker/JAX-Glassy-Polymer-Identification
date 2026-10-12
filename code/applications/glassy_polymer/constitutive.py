@@ -26,7 +26,7 @@ class ConstitutiveRegularization:
 
     ``macaulay_width`` has stress units (MPa). Zero recovers the exact
     positive-part operation. ``activation_rate`` is retained in archived
-    configurations for backward compatibility; the V4 continuous-branch
+    configurations for backward compatibility; the production continuous-branch
     operator does not use the discontinuous source-UMAT gate.
     """
 
@@ -676,7 +676,7 @@ def update_material_legacy(
 
     Scientific predictions use :func:`update_material`.  Keeping this map
     explicit prevents a compiled-source parity claim from being silently
-    transferred to the V4 stabilized discrete operator.
+    transferred to the production stabilized discrete operator.
     """
     dt = jnp.asarray(dt, dtype=jnp.float64)
     time = jnp.asarray(time, dtype=jnp.float64)

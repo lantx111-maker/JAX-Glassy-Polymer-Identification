@@ -19,12 +19,12 @@ from applications.glassy_polymer.inverse_design import (
     observable_retained_response,
 )
 from applications.glassy_polymer.protocols import run_strain_history
-from applications.glassy_polymer.scripts.run_v4_feasible_design import encode
+from applications.glassy_polymer.scripts.match_residual_histories import encode
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "results" / "v4_feasible_design" / "feasible_history_refinement.csv"
-OUTPUT = ROOT / "results" / "v5_follow_on_discriminator"
+SOURCE = ROOT / "results" / "matched_residual_histories" / "feasible_history_refinement.csv"
+OUTPUT = ROOT / "results" / "subsequent_probes"
 TARGET = 0.020
 LEVEL = 32
 
@@ -261,8 +261,8 @@ def main() -> None:
         axis.text(0.02, 0.98, f"({chr(97 + index)})", transform=axis.transAxes,
                   va="top", fontweight="bold")
         axis.grid(alpha=0.2)
-    fig.savefig(OUTPUT / "v5_primary_design_and_discriminator.pdf", bbox_inches="tight")
-    fig.savefig(OUTPUT / "v5_primary_design_and_discriminator.png", dpi=360,
+    fig.savefig(OUTPUT / "residual_design_and_reload.pdf", bbox_inches="tight")
+    fig.savefig(OUTPUT / "residual_design_and_reload.png", dpi=360,
                 bbox_inches="tight")
     plt.close(fig)
 

@@ -1,4 +1,4 @@
-"""Archive pathwise V4 root, control, state-domain, and safeguard diagnostics."""
+"""Check pathwise roots, controls, state domains and numerical safeguards."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from applications.glassy_polymer.experiments import build_experiments, predict_w
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "results" / "v4_all_path_audit"
+OUTPUT = ROOT / "results" / "response_paths"
 FULL_WIDTH_IN = 182.0 / 25.4
 
 mpl.rcParams.update({
@@ -182,8 +182,8 @@ def plot_diagnostics(rows, summary) -> None:
         handles=handles, loc="center", ncol=4, frameon=False,
         fontsize=8.0, columnspacing=1.4,
     )
-    fig.savefig(OUTPUT / "v4_all_path_audit.pdf", bbox_inches="tight", pad_inches=0.02)
-    fig.savefig(OUTPUT / "v4_all_path_audit.png", dpi=600, bbox_inches="tight", pad_inches=0.02)
+    fig.savefig(OUTPUT / "response_paths.pdf", bbox_inches="tight", pad_inches=0.02)
+    fig.savefig(OUTPUT / "response_paths.png", dpi=600, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
 
 

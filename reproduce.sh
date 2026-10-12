@@ -22,7 +22,7 @@ case "$gp_mode" in
       tests/test_constitutive.py::test_initial_state_is_stress_free \
       tests/test_constitutive.py::test_short_history_is_finite_and_differentiable \
       tests/test_constitutive.py::test_coupled_stress_control_enforces_targets \
-      tests/test_v9_invariance.py "$@" ;;
+      tests/test_parameter_equivalence.py "$@" ;;
   script)
     gp_name="${1:?Supply a driver name listed in docs/WORKFLOWS.md}"; shift
     if [[ ! "$gp_name" =~ ^[A-Za-z0-9_]+$ ]]; then printf '%s\n' 'Invalid driver name' >&2; exit 2; fi
